@@ -1,0 +1,25 @@
+﻿# Maven
+target/
+*.jar
+*.war
+*.ear
+
+# Env (contains secrets)
+.env
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.class
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker volumes
+data/

@@ -1,0 +1,22 @@
+﻿spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgresql}:5432/${POSTGRES_DB:platform_db}
+    username: ${POSTGRES_USER:platform_user}
+    password: ${POSTGRES_PASSWORD:platform_pass}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:rabbit_user}
+    password: ${RABBITMQ_DEFAULT_PASS:rabbit_pass}
+
+feign:
+  client:
+    config:
+      file-service:
+        connectTimeout: 5000
+        readTimeout: 30000

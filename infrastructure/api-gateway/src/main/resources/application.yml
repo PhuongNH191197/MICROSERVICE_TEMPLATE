@@ -1,0 +1,40 @@
+﻿server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_USERNAME:config_admin}:${CONFIG_SERVER_PASSWORD:config_pass}@${CONFIG_SERVER_HOST:config-server}:8888
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+        - id: file-service
+          uri: lb://file-service
+          predicates:
+            - Path=/api/files/**
+        - id: user-profile-service
+          uri: lb://user-profile-service
+          predicates:
+            - Path=/api/users/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_USERNAME:admin}:${EUREKA_PASSWORD:admin_pass}@${EUREKA_HOST:eureka-server}:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

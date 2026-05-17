@@ -1,0 +1,24 @@
+﻿version: "3.9"
+# Dev overrides: no resource limits, expose debug ports, verbose logging
+services:
+  postgresql:
+    ports: ["5432:5432"]
+  redis:
+    ports: ["6379:6379"]
+  rabbitmq:
+    ports: ["5672:5672", "15672:15672"]
+  minio:
+    ports: ["9000:9000", "9001:9001"]
+  auth-service:
+    environment:
+      SPRING_JPA_SHOW_SQL: "true"
+      LOGGING_LEVEL_COM_PLATFORM: DEBUG
+  notification-service:
+    environment:
+      LOGGING_LEVEL_COM_PLATFORM: DEBUG
+  file-service:
+    environment:
+      LOGGING_LEVEL_COM_PLATFORM: DEBUG
+  user-profile-service:
+    environment:
+      LOGGING_LEVEL_COM_PLATFORM: DEBUG

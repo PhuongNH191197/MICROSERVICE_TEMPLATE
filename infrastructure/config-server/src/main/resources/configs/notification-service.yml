@@ -1,0 +1,27 @@
+﻿spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgresql}:5432/${POSTGRES_DB:platform_db}
+    username: ${POSTGRES_USER:platform_user}
+    password: ${POSTGRES_PASSWORD:platform_pass}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:rabbit_user}
+    password: ${RABBITMQ_DEFAULT_PASS:rabbit_pass}
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+notification:
+  from: ${MAIL_FROM:noreply@platform.com}
+  retry-attempts: 3

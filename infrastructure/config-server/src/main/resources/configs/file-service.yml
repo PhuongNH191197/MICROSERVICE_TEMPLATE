@@ -1,0 +1,28 @@
+﻿spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgresql}:5432/${POSTGRES_DB:platform_db}
+    username: ${POSTGRES_USER:platform_user}
+    password: ${POSTGRES_PASSWORD:platform_pass}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:rabbitmq}
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:rabbit_user}
+    password: ${RABBITMQ_DEFAULT_PASS:rabbit_pass}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+minio:
+  endpoint: http://${MINIO_HOST:minio}:9000
+  access-key: ${MINIO_ROOT_USER:minio_admin}
+  secret-key: ${MINIO_ROOT_PASSWORD:minio_pass123}
+
+file:
+  allowed-types: image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document
+  presigned-url-expiry-hours: 1
