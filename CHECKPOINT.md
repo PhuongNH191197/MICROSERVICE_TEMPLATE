@@ -2,7 +2,7 @@
 
 ## Session 1 — COMPLETE
 
-All 10 Maven modules BUILD SUCCESS.
+All 11 Maven modules BUILD SUCCESS.
 
 ---
 
@@ -135,3 +135,49 @@ Minimum: create module, add to pom.xml, add config yml, add Gateway route, add t
 | RabbitMQ | 5672 / 15672 | http://localhost:15672 |
 | MinIO | 9000 / 9001 | http://localhost:9001 |
 | Zipkin | 9411 | http://localhost:9411 |
+
+---
+
+---
+
+## Session 2 — 2026-05-17
+
+### What Was Done
+
+**Documentation — all 7 doc files completed:**
+
+| File | Action | Notes |
+|------|--------|-------|
+| CONTRIBUTING.md | CREATED | Add service guide, package conventions, naming, git strategy, commit format, PR checklist, unit + integration test examples |
+| RUNBOOK.md | CREATED | Prerequisites, start/stop commands, useful URLs, health checks, log viewing, PostgreSQL access, rebuild steps, common errors + fixes |
+| API.md | CREATED | All endpoints with full curl + PowerShell examples: auth (register/login/refresh/logout/me/validate/forgot+reset-password), file (upload/get/delete/list), user-profile (get/put/avatar) |
+| README.md | UPDATED | Appended Documentation links table (ARCHITECTURE, PRD, API, RUNBOOK, CONTRIBUTING, CHECKPOINT) |
+| CHECKPOINT.md | UPDATED | 10 → 11 modules, added resume prompt section |
+| .gitignore | UPDATED | Added `.mvn/`, `mvnw`, `mvnw.cmd` |
+| .env.example | UPDATED | Added `JWT_REFRESH_SECRET`, `JWT_EXPIRATION`, `JWT_REFRESH_EXPIRATION`, `EUREKA_SERVER_URL`, `CONFIG_SERVER_URL` |
+
+**Files already complete — skipped:**
+- ARCHITECTURE.md — all sections present
+- PRD.md — all sections present
+
+### Status After Session 2
+
+- [x] All 11 modules BUILD SUCCESS (from Session 1)
+- [x] Full documentation suite complete
+- [ ] Docker not yet tested — `docker-compose up -d` not run
+- [ ] Smoke tests not yet run
+
+---
+
+## Resume Prompt for Next Session
+
+Paste this at the start of the next session:
+
+```
+Read CHECKPOINT.md first. Project: Spring Boot microservices platform at D:\MICROSERVICE_TEMPLATE.
+All 11 modules compiled successfully. Code not yet tested with Docker.
+
+Next task: docker-compose up -d, verify Eureka dashboard shows 7 services,
+run smoke tests (register → login → get profile → upload file).
+Fix any runtime errors. Git repo: https://github.com/PhuongNH191197/MICROSERVICE_TEMPLATE
+```

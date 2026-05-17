@@ -23,3 +23,8 @@ logs/
 
 # Docker volumes
 data/
+
+# Maven wrapper
+.mvn/
+mvnw
+mvnw.cmd

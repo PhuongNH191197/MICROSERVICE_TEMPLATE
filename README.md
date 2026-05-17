@@ -124,3 +124,14 @@ mvn test -pl infra-services/auth-service
 - Redis 7 (rate limiting)
 - JWT (jjwt 0.12.5), BCrypt strength 12
 - Docker + docker-compose
+
+## Documentation
+
+| Doc | Purpose |
+|-----|---------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System design, layers, inter-service communication, security flow |
+| [PRD.md](PRD.md) | Product requirements, all service specs, done checklist, TODO |
+| [API.md](API.md) | REST endpoints with full curl examples |
+| [RUNBOOK.md](RUNBOOK.md) | Operational guide — start, stop, debug, common errors |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to add a service, naming conventions, git workflow, PR checklist |
+| [CHECKPOINT.md](CHECKPOINT.md) | Build status, known issues, next steps |
