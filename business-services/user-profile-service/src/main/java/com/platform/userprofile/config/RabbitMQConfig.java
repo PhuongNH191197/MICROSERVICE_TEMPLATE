@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.config;
+package com.platform.userprofile.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;

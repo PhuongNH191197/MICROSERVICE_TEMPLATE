@@ -1,4 +1,4 @@
-﻿package com.platform.common.security;
+package com.platform.common.security;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

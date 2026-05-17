@@ -1,4 +1,4 @@
-﻿package com.platform.file.config;
+package com.platform.file.config;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

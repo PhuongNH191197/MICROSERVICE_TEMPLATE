@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.entity;
+package com.platform.userprofile.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

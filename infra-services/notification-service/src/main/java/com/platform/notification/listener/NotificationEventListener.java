@@ -1,4 +1,4 @@
-﻿package com.platform.notification.listener;
+package com.platform.notification.listener;
 import com.platform.common.events.PasswordResetEvent;
 import com.platform.common.events.UserRegisteredEvent;
 import com.platform.notification.config.RabbitMQConfig;

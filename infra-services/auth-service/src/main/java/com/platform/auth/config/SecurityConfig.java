@@ -1,4 +1,4 @@
-﻿package com.platform.auth.config;
+package com.platform.auth.config;
 
 import com.platform.common.security.JwtAuthenticationFilter;
 import com.platform.common.security.JwtTokenProvider;

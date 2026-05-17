@@ -1,4 +1,4 @@
-﻿package com.platform.common.security;
+package com.platform.common.security;
 
 public final class SecurityConstants {
     public static final String AUTHORIZATION_HEADER = "Authorization";

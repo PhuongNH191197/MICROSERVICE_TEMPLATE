@@ -1,4 +1,4 @@
-﻿package com.platform.auth.service;
+package com.platform.auth.service;
 
 import com.platform.auth.config.RabbitMQConfig;
 import com.platform.auth.dto.LoginRequest;
@@ -52,14 +52,35 @@ class AuthServiceTest {
         ReflectionTestUtils.setField(authService, "maxRefreshTokensPerUser", 5);
     }
 
+    private RegisterRequest registerRequest(String email, String password, String fullName) {
+        var r = new RegisterRequest();
+        r.setEmail(email);
+        r.setPassword(password);
+        r.setFullName(fullName);
+        return r;
+    }
+
+    private LoginRequest loginRequest(String email, String password) {
+        var r = new LoginRequest();
+        r.setEmail(email);
+        r.setPassword(password);
+        return r;
+    }
+
+    private RefreshTokenRequest refreshRequest(String token) {
+        var r = new RefreshTokenRequest();
+        r.setRefreshToken(token);
+        return r;
+    }
+
     @Test
     @DisplayName("register - success publishes UserRegisteredEvent")
     void register_success_publishesEvent() {
-        var request = new RegisterRequest("test@example.com", "password123", "Test User");
+        var request = registerRequest("test@example.com", "password123", "Test User");
         var role = new Role();
         role.setName("ROLE_USER");
         var savedUser = new User();
-        savedUser.setId(UUID.randomUUID().toString());
+        savedUser.setId(UUID.randomUUID());
         savedUser.setEmail("test@example.com");
         savedUser.setFullName("Test User");
         savedUser.setEnabled(true);
@@ -90,7 +111,7 @@ class AuthServiceTest {
     void register_duplicateEmail_throws() {
         when(userRepository.existsByEmail("dup@example.com")).thenReturn(true);
 
-        assertThatThrownBy(() -> authService.register(new RegisterRequest("dup@example.com", "pass", "Dup")))
+        assertThatThrownBy(() -> authService.register(registerRequest("dup@example.com", "pass", "Dup")))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("already registered");
     }
@@ -107,7 +128,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong", "hashed")).thenReturn(false);
 
-        assertThatThrownBy(() -> authService.login(new LoginRequest("user@example.com", "wrong")))
+        assertThatThrownBy(() -> authService.login(loginRequest("user@example.com", "wrong")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -117,7 +138,7 @@ class AuthServiceTest {
         var role = new Role();
         role.setName("ROLE_USER");
         var user = new User();
-        user.setId(UUID.randomUUID().toString());
+        user.setId(UUID.randomUUID());
         user.setEmail("user@example.com");
         user.setPasswordHash("hashed");
         user.setEnabled(true);
@@ -129,7 +150,7 @@ class AuthServiceTest {
         when(refreshTokenRepository.countByUserAndRevokedFalse(user)).thenReturn(0L);
         when(refreshTokenRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-        var response = authService.login(new LoginRequest("user@example.com", "pass"));
+        var response = authService.login(loginRequest("user@example.com", "pass"));
 
         assertThat(response.getAccessToken()).isEqualTo("access-token");
         assertThat(response.getRefreshToken()).isNotBlank();
@@ -144,7 +165,7 @@ class AuthServiceTest {
 
         when(refreshTokenRepository.findByTokenHash(any())).thenReturn(Optional.of(token));
 
-        assertThatThrownBy(() -> authService.refresh(new RefreshTokenRequest("tok")))
+        assertThatThrownBy(() -> authService.refresh(refreshRequest("tok")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -157,7 +178,7 @@ class AuthServiceTest {
 
         when(refreshTokenRepository.findByTokenHash(any())).thenReturn(Optional.of(token));
 
-        assertThatThrownBy(() -> authService.refresh(new RefreshTokenRequest("tok")))
+        assertThatThrownBy(() -> authService.refresh(refreshRequest("tok")))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

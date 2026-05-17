@@ -1,4 +1,4 @@
-﻿package com.platform.file.service;
+package com.platform.file.service;
 import com.platform.common.events.FileUploadedEvent;
 import com.platform.file.config.RabbitMQConfig;
 import com.platform.file.dto.FileUploadResponse;

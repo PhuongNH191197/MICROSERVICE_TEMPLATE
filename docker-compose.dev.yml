@@ -1,4 +1,4 @@
-﻿version: "3.9"
+version: "3.9"
 # Dev overrides: no resource limits, expose debug ports, verbose logging
 services:
   postgresql:

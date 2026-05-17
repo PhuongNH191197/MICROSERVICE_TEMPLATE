@@ -1,4 +1,4 @@
-﻿package com.platform.file.controller;
+package com.platform.file.controller;
 import com.platform.common.dto.ApiResponse;
 import com.platform.file.dto.FileUploadResponse;
 import com.platform.file.entity.FileRecord;

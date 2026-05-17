@@ -1,4 +1,4 @@
-﻿package com.platform.notification.entity;
+package com.platform.notification.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

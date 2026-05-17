@@ -1,4 +1,4 @@
-﻿package com.platform.notification.service;
+package com.platform.notification.service;
 import com.platform.notification.entity.NotificationLog;
 import com.platform.notification.repository.NotificationLogRepository;
 import lombok.RequiredArgsConstructor;

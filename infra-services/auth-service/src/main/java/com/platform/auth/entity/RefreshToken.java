@@ -1,4 +1,4 @@
-﻿package com.platform.auth.entity;
+package com.platform.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

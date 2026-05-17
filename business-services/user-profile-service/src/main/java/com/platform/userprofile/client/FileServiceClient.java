@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.client;
+package com.platform.userprofile.client;
 
 import com.platform.common.dto.ApiResponse;
 import com.platform.userprofile.dto.FileUploadResponse;

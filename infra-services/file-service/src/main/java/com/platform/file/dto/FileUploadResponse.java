@@ -1,4 +1,4 @@
-﻿package com.platform.file.dto;
+package com.platform.file.dto;
 import lombok.Builder;
 import lombok.Data;
 

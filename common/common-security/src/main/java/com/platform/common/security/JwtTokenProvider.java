@@ -1,4 +1,4 @@
-﻿package com.platform.common.security;
+package com.platform.common.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

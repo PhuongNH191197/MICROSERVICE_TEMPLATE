@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.dto;
+package com.platform.userprofile.dto;
 import lombok.Data;
 
 @Data

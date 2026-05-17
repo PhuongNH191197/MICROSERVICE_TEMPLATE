@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.listener;
+package com.platform.userprofile.listener;
 import com.platform.common.events.UserRegisteredEvent;
 import com.platform.userprofile.entity.Profile;
 import com.platform.userprofile.repository.ProfileRepository;

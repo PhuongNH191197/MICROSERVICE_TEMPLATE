@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.controller;
+package com.platform.userprofile.controller;
 import com.platform.common.dto.ApiResponse;
 import com.platform.userprofile.dto.UpdateProfileRequest;
 import com.platform.userprofile.entity.Profile;

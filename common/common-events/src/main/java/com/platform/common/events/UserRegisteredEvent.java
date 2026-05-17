@@ -1,4 +1,4 @@
-﻿package com.platform.common.events;
+package com.platform.common.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

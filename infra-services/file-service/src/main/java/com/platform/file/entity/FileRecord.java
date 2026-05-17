@@ -1,4 +1,4 @@
-﻿package com.platform.file.entity;
+package com.platform.file.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

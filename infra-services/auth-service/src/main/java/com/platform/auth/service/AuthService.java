@@ -1,4 +1,4 @@
-﻿package com.platform.auth.service;
+package com.platform.auth.service;
 
 import com.platform.auth.config.RabbitMQConfig;
 import com.platform.auth.dto.*;

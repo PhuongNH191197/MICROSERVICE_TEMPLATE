@@ -1,4 +1,4 @@
-﻿package com.platform.common.dto;
+package com.platform.common.dto;
 
 import org.junit.jupiter.api.Test;
 

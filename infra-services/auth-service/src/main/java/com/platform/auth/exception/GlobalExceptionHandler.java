@@ -1,4 +1,4 @@
-﻿package com.platform.auth.exception;
+package com.platform.auth.exception;
 
 import com.platform.common.dto.ApiResponse;
 import com.platform.common.dto.ErrorResponse;

@@ -1,4 +1,4 @@
-﻿package com.platform.auth.controller;
+package com.platform.auth.controller;
 
 import com.platform.auth.dto.*;
 import com.platform.auth.entity.User;

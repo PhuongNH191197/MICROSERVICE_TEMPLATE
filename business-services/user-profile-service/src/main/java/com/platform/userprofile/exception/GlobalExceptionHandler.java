@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.exception;
+package com.platform.userprofile.exception;
 import com.platform.common.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

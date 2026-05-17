@@ -1,4 +1,4 @@
-﻿package com.platform.userprofile.service;
+package com.platform.userprofile.service;
 
 import com.platform.userprofile.client.FileServiceClient;
 import com.platform.userprofile.dto.FileUploadResponse;

@@ -1,4 +1,4 @@
-﻿package com.platform.notification.config;
+package com.platform.notification.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

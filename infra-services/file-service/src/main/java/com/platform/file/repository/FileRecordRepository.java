@@ -1,4 +1,4 @@
-﻿package com.platform.file.repository;
+package com.platform.file.repository;
 import com.platform.file.entity.FileRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
