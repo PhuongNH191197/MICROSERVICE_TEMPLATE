@@ -10,7 +10,10 @@
       "PowerShell(curl.exe -s -X POST http://localhost:8765/detect -F \"file=@D:\\\\MICROSERVICE_TEMPLATE\\\\python-services\\\\data-test\\\\test_khong_loi.mp3\")",
       "PowerShell(curl.exe -s -X POST http://localhost:8765/detect -F \"file=@D:\\\\MICROSERVICE_TEMPLATE\\\\python-services\\\\data-test\\\\co_loi.mp3\")",
       "PowerShell(powershell -NonInteractive -File D:\\MICROSERVICE_TEMPLATE\\scripts\\update-tree.ps1)",
-      "Bash(rtk grep *)"
+      "Bash(rtk grep *)",
+      "mcp__plugin_context-mode_context-mode__ctx_batch_execute",
+      "Bash(rtk ls *)",
+      "Bash(rtk read *)"
     ]
   },
   "hooks": {

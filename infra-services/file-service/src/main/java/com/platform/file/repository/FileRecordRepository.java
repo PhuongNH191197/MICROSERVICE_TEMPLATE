@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface FileRecordRepository extends JpaRepository<FileRecord, UUID> {
-    List<FileRecord> findByUserIdAndDeletedFalse(String userId);
+    List<FileRecord> findByUploaderIdAndDeletedFalse(String uploaderId);
     Optional<FileRecord> findByIdAndDeletedFalse(UUID id);
     Optional<FileRecord> findByFileKey(String fileKey);
     Optional<FileRecord> findByFileKeyAndStatus(String fileKey, FileStatus status);

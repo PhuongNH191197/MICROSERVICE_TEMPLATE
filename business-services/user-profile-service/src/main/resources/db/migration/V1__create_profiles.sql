@@ -1,4 +1,4 @@
-﻿CREATE TABLE profiles (
+CREATE TABLE IF NOT EXISTS profiles (
     id VARCHAR(255) PRIMARY KEY,
     full_name VARCHAR(255),
     avatar_url VARCHAR(1000),

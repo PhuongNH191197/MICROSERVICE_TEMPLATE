@@ -21,7 +21,10 @@ import java.util.Map;
 public class GlobalAuthFilter implements GlobalFilter, Ordered {
 
     private static final List<String> PUBLIC_PATHS = List.of(
-            "/api/auth/register", "/api/auth/login", "/api/auth/refresh"
+            "/api/auth/register", "/api/auth/login", "/api/auth/refresh",
+            "/api/auth/validate", "/api/auth/forgot-password", "/api/auth/reset-password",
+            "/actuator/health",
+            "/swagger-ui", "/v3/api-docs", "/swagger-resources", "/webjars"
     );
 
     private final WebClient webClient;

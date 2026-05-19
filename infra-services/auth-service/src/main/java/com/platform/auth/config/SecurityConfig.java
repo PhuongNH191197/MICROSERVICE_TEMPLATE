@@ -28,7 +28,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/register", "/api/auth/login",
                         "/api/auth/refresh", "/api/auth/validate",
                         "/api/auth/forgot-password", "/api/auth/reset-password",
-                        "/actuator/health").permitAll()
+                        "/actuator/health",
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                     UsernamePasswordAuthenticationFilter.class);
