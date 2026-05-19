@@ -169,6 +169,54 @@ Minimum: create module, add to pom.xml, add config yml, add Gateway route, add t
 
 ---
 
+## Session 3 — 2026-05-19
+
+### What Was Done
+
+#### Fix 1 — Eureka Server: no-login dashboard
+- `EurekaServerApplication.java`: disabled httpBasic + formLogin + csrf via `AbstractHttpConfigurer::disable`
+- `application.yml`: removed dead `management.security.enabled: false` (Spring Boot 1.x only)
+- Result: http://localhost:8761 accessible without login ✅
+
+#### Fix 2 — Python microservice: vocal-detector (port 8765) — DONE ✅
+**New service built from scratch at `python-services/vocal-detector/`**
+
+| File | Notes |
+|------|-------|
+| `app/main.py` | FastAPI, lifespan model load, `/health` GET, `/detect` POST, 50MB limit |
+| `app/detector.py` | Essentia pipeline: effnet embeddings → voice/instrumental classifier |
+| `app/schemas.py` | Pydantic response: `is_instrumental`, `confidence`, `scores` |
+| `Dockerfile` | python:3.11-slim, ffmpeg, non-root appuser uid=1000 |
+| `docker-compose.yml` | `./models:/models:ro`, 2CPU/1GB limit, healthcheck via `python urllib` |
+| `scripts/download_models.sh` | bash — download 3 MTG model files from essentia.upf.edu |
+| `scripts/download_models.ps1` | PowerShell equivalent for Windows |
+| `requirements.txt` | fastapi, uvicorn, essentia-tensorflow, numpy |
+| `generate_doc.py` | python-docx script — generates `VOCAL_DETECTOR_API.docx` |
+| `VOCAL_DETECTOR_API.docx` | Partner-ready API documentation (10 sections) |
+
+**Key bugs fixed during build:**
+- Classifier URL 404 → correct path `classification-heads/voice_instrumental/`
+- Metadata filename wrong → `voice_instrumental-discogs-effnet-1.json`
+- TF node names wrong → `model/Placeholder` / `model/Softmax`
+- Docker volume broken on Git Bash (MSYS path mangling) → use PowerShell
+- Healthcheck `curl`/`wget` not in slim image → use `python -c "urllib.request.urlopen(...)"`
+
+**Tested with real MP3 files:**
+- `test_khong_loi.mp3` → `is_instrumental: true`, confidence 96% ✅
+- `co_loi.mp3` → `is_instrumental: false`, confidence 92% ✅
+
+**Deploy on new server:**
+```bash
+# 1. Clone repo
+# 2. Download models
+./scripts/download_models.sh   # Linux
+.\scripts\download_models.ps1  # Windows
+# 3. Build & run
+docker-compose up -d --build
+```
+
+---
+
 ## Resume Prompt for Next Session
 
 Paste this at the start of the next session:

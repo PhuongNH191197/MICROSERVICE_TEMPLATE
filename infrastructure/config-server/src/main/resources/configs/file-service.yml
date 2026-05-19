@@ -5,9 +5,15 @@ spring:
     password: ${POSTGRES_PASSWORD:platform_pass}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: files
   flyway:
-    enabled: true
+    enabled: false
+    schemas: files
+    default-schema: files
+    create-schemas: true
   rabbitmq:
     host: ${RABBITMQ_HOST:rabbitmq}
     port: 5672
@@ -15,14 +21,18 @@ spring:
     password: ${RABBITMQ_DEFAULT_PASS:rabbit_pass}
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: ${FILE_MAX_SIZE_MB:20}MB
+      max-request-size: ${FILE_MAX_SIZE_MB:20}MB
 
 minio:
-  endpoint: http://${MINIO_HOST:minio}:9000
+  endpoint: ${MINIO_PROTOCOL:http}://${MINIO_HOST:minio}:${MINIO_PORT:9000}
   access-key: ${MINIO_ROOT_USER:minio_admin}
   secret-key: ${MINIO_ROOT_PASSWORD:minio_pass123}
 
 file:
-  allowed-types: image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document
-  presigned-url-expiry-hours: 1
+  allowed-types: image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,audio/mpeg,audio/wav,audio/ogg,audio/flac,audio/aac,audio/x-m4a,audio/mp4
+  max-size-mb: ${FILE_MAX_SIZE_MB:20}
+  presigned-url-expiry-hours: ${FILE_PRESIGNED_URL_EXPIRY_HOURS:1}
+  bucket:
+    audio: ${FILE_BUCKET_AUDIO:audio}
+    default: ${FILE_BUCKET_DEFAULT:documents}

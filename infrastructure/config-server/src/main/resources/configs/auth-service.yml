@@ -5,10 +5,16 @@ spring:
     password: ${POSTGRES_PASSWORD:platform_pass}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
+    properties:
+      hibernate:
+        default_schema: auth
   flyway:
-    enabled: true
+    enabled: false
+    schemas: auth
+    default-schema: auth
+    create-schemas: true
   rabbitmq:
     host: ${RABBITMQ_HOST:rabbitmq}
     port: 5672

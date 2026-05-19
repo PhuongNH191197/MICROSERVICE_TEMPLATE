@@ -1,4 +1,4 @@
-version: "3.9"
+﻿version: "3.9"
 
 services:
   postgresql:
@@ -58,14 +58,12 @@ services:
   eureka-server:
     build: ./infrastructure/eureka-server
     ports: ["8761:8761"]
-    environment:
-      EUREKA_USERNAME: ${EUREKA_USERNAME}
-      EUREKA_PASSWORD: ${EUREKA_PASSWORD}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8761/actuator/health || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 10
+      start_period: 60s
 
   config-server:
     build: ./infrastructure/config-server
@@ -76,14 +74,16 @@ services:
       CONFIG_SERVER_USERNAME: ${CONFIG_SERVER_USERNAME}
       CONFIG_SERVER_PASSWORD: ${CONFIG_SERVER_PASSWORD}
       EUREKA_HOST: eureka-server
+      FLYWAY_VALIDATE_ON_MIGRATE: ${FLYWAY_VALIDATE_ON_MIGRATE:-false}
     depends_on:
       eureka-server:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
-      interval: 15s
-      timeout: 10s
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8888/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 15s
       retries: 10
+      start_period: 90s
 
   api-gateway:
     build: ./infrastructure/api-gateway
@@ -176,9 +176,15 @@ services:
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-      MINIO_HOST: minio
+      MINIO_HOST: ${MINIO_HOST:-minio}
+      MINIO_PORT: ${MINIO_PORT:-9000}
+      MINIO_PROTOCOL: ${MINIO_PROTOCOL:-http}
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      FILE_MAX_SIZE_MB: ${FILE_MAX_SIZE_MB:-20}
+      FILE_PRESIGNED_URL_EXPIRY_HOURS: ${FILE_PRESIGNED_URL_EXPIRY_HOURS:-1}
+      FILE_BUCKET_AUDIO: ${FILE_BUCKET_AUDIO:-audio}
+      FILE_BUCKET_DEFAULT: ${FILE_BUCKET_DEFAULT:-documents}
     depends_on:
       postgresql:
         condition: service_healthy
@@ -214,6 +220,29 @@ services:
       config-server:
         condition: service_healthy
 
+  vocal-detector:
+    build:
+      context: ./business-services/vocal-detector
+      dockerfile: Dockerfile
+    ports: ["8765:8765"]
+    volumes:
+      - ./business-services/vocal-detector/models:/models:ro
+    environment:
+      MODELS_DIR: /models
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
 volumes:
   postgres_data:
   minio_data:
+

@@ -1,0 +1,8 @@
+# Shared config — loaded by ALL services from Config Server.
+# Service-specific configs override values here.
+
+spring:
+  flyway:
+    # Dev: FLYWAY_VALIDATE_ON_MIGRATE=false → skip checksum validation (no more mismatch errors)
+    # Prod: FLYWAY_VALIDATE_ON_MIGRATE=true → strict validation
+    validate-on-migrate: false

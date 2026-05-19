@@ -23,22 +23,25 @@ public class FileStorageService {
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${file.allowed-types:image/jpeg,image/png,application/pdf}") private String allowedTypes;
+    @Value("${file.max-size-mb:10}") private long maxSizeMb;
     @Value("${file.presigned-url-expiry-hours:1}") private int presignedUrlExpiryHours;
-    private static final String BUCKET = "documents";
+    @Value("${file.bucket.audio:audio}") private String audioBucket;
+    @Value("${file.bucket.default:documents}") private String defaultBucket;
 
     @Transactional
     public FileUploadResponse upload(MultipartFile file, String userId) throws Exception {
         validateFile(file);
-        ensureBucket(BUCKET);
+        String bucket = resolveBucket(file.getContentType());
+        ensureBucket(bucket);
         String storedName = UUID.randomUUID() + "-" + file.getOriginalFilename();
         minioClient.putObject(PutObjectArgs.builder()
-                .bucket(BUCKET).object(storedName)
+                .bucket(bucket).object(storedName)
                 .stream(file.getInputStream(), file.getSize(), -1)
                 .contentType(file.getContentType()).build());
 
         FileRecord record = FileRecord.builder()
                 .userId(userId).originalName(file.getOriginalFilename())
-                .storedName(storedName).bucket(BUCKET)
+                .storedName(storedName).bucket(bucket)
                 .size(file.getSize()).contentType(file.getContentType()).build();
         record = fileRecordRepository.save(record);
 
@@ -71,9 +74,15 @@ public class FileStorageService {
 
     private void validateFile(MultipartFile file) {
         if (file.isEmpty()) throw new IllegalArgumentException("Empty file");
-        if (file.getSize() > 10 * 1024 * 1024) throw new IllegalArgumentException("File exceeds 10MB limit");
+        if (file.getSize() > maxSizeMb * 1024 * 1024)
+            throw new IllegalArgumentException("File exceeds " + maxSizeMb + "MB limit");
         List<String> allowed = Arrays.asList(allowedTypes.split(","));
         if (!allowed.contains(file.getContentType())) throw new IllegalArgumentException("File type not allowed");
+    }
+
+    private String resolveBucket(String contentType) {
+        if (contentType != null && contentType.startsWith("audio/")) return audioBucket;
+        return defaultBucket;
     }
 
     private void ensureBucket(String bucket) throws Exception {

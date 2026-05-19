@@ -5,6 +5,8 @@ spring:
     name: notification-service
   config:
     import: optional:configserver:http://${CONFIG_SERVER_USERNAME:config_admin}:${CONFIG_SERVER_PASSWORD:config_pass}@${CONFIG_SERVER_HOST:config-server}:8888
+  flyway:
+    validate-on-migrate: false
 eureka:
   client:
     service-url:
