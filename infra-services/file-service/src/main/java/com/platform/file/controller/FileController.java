@@ -1,9 +1,8 @@
 package com.platform.file.controller;
 import com.platform.common.dto.ApiResponse;
-import com.platform.file.dto.FileUploadResponse;
-import com.platform.file.entity.FileRecord;
-import com.platform.file.repository.FileRecordRepository;
+import com.platform.file.dto.*;
 import com.platform.file.service.FileStorageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +12,26 @@ import java.util.List;
 @RestController @RequestMapping("/api/files") @RequiredArgsConstructor
 public class FileController {
     private final FileStorageService fileStorageService;
-    private final FileRecordRepository fileRecordRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse<FileUploadResponse>> upload(
             @RequestParam("file") MultipartFile file,
             @RequestHeader("X-User-Id") String userId) throws Exception {
         return ResponseEntity.ok(ApiResponse.success(fileStorageService.upload(file, userId)));
+    }
+
+    @PostMapping("/presigned-url")
+    public ResponseEntity<ApiResponse<PresignedUrlResponse>> getPresignedUrl(
+            @RequestBody @Valid PresignedUrlRequest request,
+            @RequestHeader("X-User-Id") String userId) throws Exception {
+        return ResponseEntity.ok(ApiResponse.success(fileStorageService.createPresignedPutUrl(request, userId)));
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<ApiResponse<FileMetadataResponse>> confirmUpload(
+            @RequestBody @Valid ConfirmUploadRequest request,
+            @RequestHeader("X-User-Id") String userId) throws Exception {
+        return ResponseEntity.ok(ApiResponse.success(fileStorageService.confirmUpload(request, userId)));
     }
 
     @GetMapping("/{fileId}")
@@ -29,13 +41,20 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileId}")
-    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable String fileId) {
-        fileStorageService.delete(fileId);
+    public ResponseEntity<ApiResponse<Void>> delete(
+            @PathVariable String fileId,
+            @RequestHeader("X-User-Id") String userId) {
+        fileStorageService.delete(fileId, userId);
         return ResponseEntity.ok(ApiResponse.success("File deleted", null));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<FileRecord>>> getUserFiles(@PathVariable String userId) {
-        return ResponseEntity.ok(ApiResponse.success(fileRecordRepository.findByUserIdAndDeletedFalse(userId)));
+    public ResponseEntity<ApiResponse<List<FileMetadataResponse>>> getUserFiles(
+            @PathVariable String userId,
+            @RequestHeader("X-User-Id") String requestingUserId) {
+        if (!requestingUserId.equals(userId))
+            throw new IllegalArgumentException("Access denied");
+        List<FileMetadataResponse> files = fileStorageService.getUserFiles(userId);
+        return ResponseEntity.ok(ApiResponse.success(files));
     }
 }

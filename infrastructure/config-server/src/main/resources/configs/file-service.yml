@@ -1,19 +1,22 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${DB_HOST:postgresql}:5432/${POSTGRES_DB:platform_db}
+    url: jdbc:postgresql://${DB_HOST:postgresql}:5432/media_db
     username: ${POSTGRES_USER:platform_user}
     password: ${POSTGRES_PASSWORD:platform_pass}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
-        default_schema: files
+        default_schema: public
+        hbm2dbdl.create_namespaces: true
   flyway:
-    enabled: false
-    schemas: files
-    default-schema: files
+    enabled: true
+    schemas: public
+    default-schema: public
     create-schemas: true
+    baseline-on-migrate: true
+    baseline-version: 0
   rabbitmq:
     host: ${RABBITMQ_HOST:rabbitmq}
     port: 5672
@@ -30,9 +33,16 @@ minio:
   secret-key: ${MINIO_ROOT_PASSWORD:minio_pass123}
 
 file:
-  allowed-types: image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,audio/mpeg,audio/wav,audio/ogg,audio/flac,audio/aac,audio/x-m4a,audio/mp4
-  max-size-mb: ${FILE_MAX_SIZE_MB:20}
+  allowed-types:
+    image: image/jpeg,image/png,image/webp,image/gif
+    audio: audio/mpeg,audio/wav,audio/ogg,audio/aac,audio/x-m4a,audio/mp4
+  max-size-mb:
+    image: ${FILE_MAX_SIZE_IMAGE_MB:5}
+    audio: ${FILE_MAX_SIZE_AUDIO_MB:50}
   presigned-url-expiry-hours: ${FILE_PRESIGNED_URL_EXPIRY_HOURS:1}
+  presigned-put-url-expiry-minutes: ${FILE_PRESIGNED_PUT_EXPIRY_MIN:5}
   bucket:
-    audio: ${FILE_BUCKET_AUDIO:audio}
-    default: ${FILE_BUCKET_DEFAULT:documents}
+    images: ${FILE_BUCKET_IMAGES:media-images}
+    audio: ${FILE_BUCKET_AUDIO:media-audio}
+    temp: ${FILE_BUCKET_TEMP:media-temp}
+    private: ${FILE_BUCKET_PRIVATE:media-private}

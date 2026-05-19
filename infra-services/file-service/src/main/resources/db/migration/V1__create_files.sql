@@ -1,4 +1,4 @@
-﻿CREATE TABLE files (
+CREATE TABLE IF NOT EXISTS files (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id VARCHAR(255),
     original_name VARCHAR(500),
@@ -10,4 +10,5 @@
     deleted BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-CREATE INDEX idx_files_user_id ON files(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_files_user_id ON files(user_id);
