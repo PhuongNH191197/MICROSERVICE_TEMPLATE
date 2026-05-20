@@ -23,6 +23,7 @@
         <module>infra-services/notification-service</module>
         <module>infra-services/file-service</module>
         <module>business-services/user-profile-service</module>
+        <module>business-services/audio-generation-service</module>
     </modules>
 
     <properties>
