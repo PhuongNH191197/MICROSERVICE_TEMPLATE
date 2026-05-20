@@ -30,14 +30,14 @@ public class AiGenerateService {
 
         creditService.deductCredit(userId, null);
 
-        String cachedUrl = redisTemplate.opsForValue().get(cacheKey);
-        if (cachedUrl != null) {
+        String cachedObjectName = redisTemplate.opsForValue().get(cacheKey);
+        if (cachedObjectName != null) {
             log.info("Cache HIT cacheKey={} userId={}", cacheKey, userId);
             AudioJob job = AudioJob.builder()
                 .userId(userId).jobType(JobType.AI_GENERATE).status(JobStatus.COMPLETED)
                 .genre(req.getGenre().name()).mood(req.getMood().name())
                 .instrument(req.getInstrument().name())
-                .audioUrl(cachedUrl).cacheKey(cacheKey)
+                .audioUrl(cachedObjectName).cacheKey(cacheKey)
                 .completedAt(Instant.now()).build();
             return toResponse(jobRepo.save(job));
         }
@@ -53,8 +53,13 @@ public class AiGenerateService {
             .prompt(prompt).title(title).cacheKey(cacheKey).build();
         job = jobRepo.save(job);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfig.AUDIO_EXCHANGE,
-            RabbitMQConfig.ROUTING_AI, job.getId().toString());
+        try {
+            rabbitTemplate.convertAndSend(RabbitMQConfig.AUDIO_EXCHANGE,
+                RabbitMQConfig.ROUTING_AI, job.getId().toString());
+        } catch (Exception e) {
+            creditService.refundCredit(userId, job.getId());
+            throw new RuntimeException("Failed to queue job: " + e.getMessage(), e);
+        }
         log.info("Queued AI job id={} userId={}", job.getId(), userId);
         return toResponse(job);
     }

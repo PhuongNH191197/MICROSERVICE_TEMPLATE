@@ -1,0 +1,1 @@
+ALTER TABLE audio_jobs ALTER COLUMN tts_text TYPE VARCHAR(500);

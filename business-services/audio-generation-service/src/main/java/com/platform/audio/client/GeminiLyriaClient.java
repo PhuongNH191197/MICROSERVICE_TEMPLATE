@@ -20,7 +20,7 @@ public class GeminiLyriaClient {
         if (apiKey == null || apiKey.isBlank()) {
             throw new AudioProcessingException("GEMINI_API_KEY not configured");
         }
-        String url = baseUrl + "/v1beta/models/" + LYRIA_MODEL + ":generateContent?key=" + apiKey;
+        String url = baseUrl + "/v1beta/models/" + LYRIA_MODEL + ":generateContent";
 
         Map<String, Object> body = Map.of(
             "contents", List.of(Map.of("role", "user", "parts", List.of(Map.of("text", prompt))))
@@ -28,6 +28,7 @@ public class GeminiLyriaClient {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("X-Goog-Api-Key", apiKey);
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
         try {

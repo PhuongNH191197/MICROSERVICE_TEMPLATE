@@ -38,6 +38,9 @@ public class MinioAudioService {
     }
 
     public Path downloadToTemp(String fileKey) throws Exception {
+        if (fileKey.contains("..") || fileKey.startsWith("/")) {
+            throw new IllegalArgumentException("Invalid file key: " + fileKey);
+        }
         Path tmp = Files.createTempFile("source_", ".mp3");
         try (InputStream is = minioClient.getObject(
                 GetObjectArgs.builder().bucket(bucket).object(fileKey).build())) {

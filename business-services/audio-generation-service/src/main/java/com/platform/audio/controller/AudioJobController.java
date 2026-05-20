@@ -11,6 +11,7 @@ import com.platform.audio.service.MinioAudioService;
 import com.platform.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class AudioJobController {
     private final AiGenerateService aiGenerateService;
     private final CreditService creditService;
     private final MinioAudioService minioService;
+
+    @Value("${admin.secret:}") private String adminSecret;
 
     @GetMapping("/jobs")
     public ResponseEntity<ApiResponse<Page<AudioJobResponse>>> listJobs(
@@ -73,7 +76,9 @@ public class AudioJobController {
         if (job.getStatus() != JobStatus.COMPLETED || job.getAudioUrl() == null) {
             return ResponseEntity.status(404).body(ApiResponse.error("Audio not ready"));
         }
-        String objectName = job.getUserId() + "/" + job.getId() + ".mp3";
+        String objectName = job.getAudioUrl().startsWith("/api/")
+            ? job.getUserId() + "/" + job.getId() + ".mp3"
+            : job.getAudioUrl();
         String presigned = minioService.generatePresignedGet(objectName);
         return ResponseEntity.status(302).location(URI.create(presigned)).build();
     }
@@ -96,7 +101,11 @@ public class AudioJobController {
     @PostMapping("/admin/credits/topup")
     public ResponseEntity<ApiResponse<CreditBalanceResponse>> topup(
             @RequestHeader("X-User-Id") String userId,
+            @RequestHeader(value = "X-Admin-Secret", required = false) String secret,
             @RequestParam(defaultValue = "10") int amount) {
+        if (!adminSecret.isBlank() && !adminSecret.equals(secret)) {
+            return ResponseEntity.status(403).body(ApiResponse.error("Forbidden"));
+        }
         creditService.topup(userId, amount);
         return ResponseEntity.ok(ApiResponse.success(
             CreditBalanceResponse.builder().userId(userId).balance(creditService.getBalance(userId)).build()));

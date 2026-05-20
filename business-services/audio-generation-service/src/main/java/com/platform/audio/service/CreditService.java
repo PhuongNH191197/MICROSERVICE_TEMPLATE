@@ -33,7 +33,7 @@ public class CreditService {
     @Transactional
     public void refundCredit(String userId, UUID jobId) {
         UserCredit credit = creditRepo.findByUserIdForUpdate(userId)
-            .orElseGet(() -> UserCredit.builder().userId(userId).balance(0).build());
+            .orElseThrow(() -> new IllegalStateException("No credit account to refund for: " + userId));
         credit.setBalance(credit.getBalance() + 1);
         credit.setUpdatedAt(Instant.now());
         creditRepo.save(credit);

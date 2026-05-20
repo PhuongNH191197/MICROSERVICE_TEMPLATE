@@ -1,17 +1,21 @@
 package com.platform.audio.service;
 import com.platform.audio.client.ElevenLabsClient;
 import com.platform.audio.client.GeminiLyriaClient;
+import com.platform.audio.config.RabbitMQConfig;
 import com.platform.audio.dto.response.PreviewVersion;
 import com.platform.audio.entity.AudioJob;
 import com.platform.audio.enums.JobStatus;
+import com.platform.audio.enums.JobType;
 import com.platform.audio.processing.FfmpegProcessor;
 import com.platform.audio.repository.AudioJobRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.nio.file.*;
 import java.time.Instant;
 import java.util.*;
@@ -27,11 +31,13 @@ public class AudioWorker {
     private final StringRedisTemplate redisTemplate;
     private final CreditService creditService;
     private final EventPublisher eventPublisher;
+    private final RabbitTemplate rabbitTemplate;
 
     @FunctionalInterface
     private interface JobRunner { void run(AudioJob job) throws Exception; }
 
     @PostConstruct
+    @Transactional
     public void recoverStuckJobs() {
         List<AudioJob> stuck = jobRepo.findByStatus(JobStatus.PROCESSING);
         for (AudioJob j : stuck) {
@@ -75,13 +81,13 @@ public class AudioWorker {
                 try { creditService.refundCredit(job.getUserId(), job.getId()); }
                 catch (Exception ex) { log.error("Failed to refund credit for job {}: {}", jobId, ex.getMessage()); }
             } else {
-                int[] delays = {5000, 15000, 45000};
-                try { Thread.sleep(delays[Math.min(job.getRetryCount() - 1, 2)]); }
-                catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
                 job.setStatus(JobStatus.PENDING);
                 job.setUpdatedAt(Instant.now());
                 jobRepo.save(job);
-                log.info("Re-queuing job {} attempt {}", jobId, job.getRetryCount());
+                String routingKey = job.getJobType() == JobType.AI_GENERATE
+                    ? RabbitMQConfig.ROUTING_AI : RabbitMQConfig.ROUTING_DIY;
+                rabbitTemplate.convertAndSend(RabbitMQConfig.AUDIO_EXCHANGE, routingKey, jobId.toString());
+                log.info("Re-queued job {} attempt {}", jobId, job.getRetryCount());
             }
         }
     }
@@ -98,7 +104,7 @@ public class AudioWorker {
             String presignedUrl = minioService.generatePresignedGet(objectName);
 
             if (job.getCacheKey() != null) {
-                redisTemplate.opsForValue().set(job.getCacheKey(), presignedUrl, 30, TimeUnit.DAYS);
+                redisTemplate.opsForValue().set(job.getCacheKey(), objectName, 30, TimeUnit.DAYS);
                 log.info("Cached AI result cacheKey={}", job.getCacheKey());
             }
 
